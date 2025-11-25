@@ -60,8 +60,8 @@ const swaggerOptions = {
     }
   },
 
-  // Caminho absoluto do arquivo com comentários @swagger
-  apis: [path.join(__dirname, '../docs/swagger-paths.js')]
+
+apis: [path.join(__dirname, '../routes/authRoutes.js')]
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
