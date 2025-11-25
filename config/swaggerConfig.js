@@ -1,8 +1,9 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const path = require('path');
 
 const PORT = process.env.PORT || 5001;
-const BACKEND_URL = process.env.AUTH_SERVICE_URL; // <- aqui pega a URL do Render
+const BACKEND_URL = process.env.AUTH_SERVICE_URL || `http://localhost:${PORT}`;
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -13,68 +14,61 @@ const swaggerOptions = {
       description: 'Microserviço responsável pelo registro e login de usuários com JWT.',
     },
     servers: [
-      { 
-        url: BACKEND_URL || `http://localhost:${PORT}`, 
+      {
+        url: BACKEND_URL,
         description: 'Servidor Auth Service'
       }
     ],
     components: {
-      securitySchemes: {
-        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
-      },
       schemas: {
         RegisterInput: {
           type: 'object',
-          required: ['name', 'email', 'password'],
           properties: {
-            name: { type: 'string', example: 'Ana Laura' },
-            email: { type: 'string', example: 'ana@example.com' },
-            password: { type: 'string', example: '123456' }
-          }
+            email: { type: 'string', example: 'usuario@email.com' },
+            password: { type: 'string', example: 'senha123' }
+          },
+          required: ['email', 'password']
         },
         RegisterSuccess: {
           type: 'object',
           properties: {
-            message: { type: 'string', example: 'Usuário registrado com sucesso!' },
-            user: {
-              type: 'object',
-              properties: { 
-                id: { type: 'string', example: '671bcd00f29b2b83a4e1a8f3' }, 
-                email: { type: 'string', example: 'ana@example.com' } 
-              }
-            }
+            message: { type: 'string', example: 'Usuário registrado com sucesso' },
+            userId: { type: 'string', example: 'abc123' }
           }
         },
         LoginInput: {
           type: 'object',
-          required: ['email', 'password'],
           properties: {
-            email: { type: 'string', example: 'ana@example.com' },
-            password: { type: 'string', example: '123456' }
-          }
+            email: { type: 'string', example: 'usuario@email.com' },
+            password: { type: 'string', example: 'senha123' }
+          },
+          required: ['email', 'password']
         },
         LoginSuccess: {
           type: 'object',
           properties: {
-            message: { type: 'string', example: 'Login realizado com sucesso!' },
-            token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR...' }
+            token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6...' }
           }
         },
         ErrorResponse: {
           type: 'object',
-          properties: { error: { type: 'string', example: 'Credenciais inválidas.' } }
+          properties: {
+            error: { type: 'string', example: 'Mensagem de erro' }
+          }
         }
       }
     }
   },
-  apis: ['./../docs/swaggerPaths.js'] 
+
+  // Caminho absoluto do arquivo com comentários @swagger
+  apis: [path.join(__dirname, '../docs/swagger-paths.js')]
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 const setupSwagger = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log(`📘 Swagger rodando em: ${BACKEND_URL || `http://localhost:${PORT}`}/api-docs`);
+  console.log(`📘 Swagger rodando em: ${BACKEND_URL}/api-docs`);
 };
 
 module.exports = setupSwagger;
