@@ -3,7 +3,10 @@ const swaggerUi = require('swagger-ui-express');
 const path = require('path');
 
 const PORT = process.env.PORT || 5001;
-const BACKEND_URL = process.env.AUTH_SERVICE_URL || `https://micronotagest.onrender.com`;
+
+// 👉 URL correta do microserviço (Auth Service)
+const AUTH_SERVICE_URL =
+  process.env.AUTH_SERVICE_URL || 'https://micronotagest.onrender.com';
 
 const swaggerOptions = {
   definition: {
@@ -13,12 +16,15 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'Microserviço responsável pelo registro e login de usuários com JWT.',
     },
+
+    // 👉 Swagger só precisa apontar para o Auth Service (este micro)
     servers: [
       {
-        url: BACKEND_URL,
+        url: AUTH_SERVICE_URL,
         description: 'Servidor Auth Service',
       },
     ],
+
     components: {
       schemas: {
         RegisterInput: {
@@ -78,6 +84,7 @@ const swaggerOptions = {
     },
   },
 
+  // 👉 Importa os comentários das rotas
   apis: [path.join(__dirname, '../routes/authRoutes.js')],
 };
 
@@ -85,7 +92,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 const setupSwagger = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log(`📘 Swagger rodando em: ${BACKEND_URL}/api-docs`);
+  console.log(`📘 Swagger rodando em: ${AUTH_SERVICE_URL}/api-docs`);
 };
 
 module.exports = setupSwagger;
