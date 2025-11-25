@@ -3,10 +3,10 @@ const swaggerUi = require('swagger-ui-express');
 const path = require('path');
 
 const PORT = process.env.PORT || 5001;
-const BACKEND_URL = process.env.AUTH_SERVICE_URL || `http://localhost:${PORT}`;
+const BACKEND_URL = process.env.AUTH_SERVICE_URL || `https://micronotagest.onrender.com`;
 
 const swaggerOptions = {
-  swaggerDefinition: {
+  definition: {
     openapi: '3.0.0',
     info: {
       title: 'Auth Service - NotaGest',
@@ -16,52 +16,69 @@ const swaggerOptions = {
     servers: [
       {
         url: BACKEND_URL,
-        description: 'Servidor Auth Service'
-      }
+        description: 'Servidor Auth Service',
+      },
     ],
     components: {
       schemas: {
         RegisterInput: {
           type: 'object',
           properties: {
+            nome: { type: 'string', example: 'Bianca' },
             email: { type: 'string', example: 'usuario@email.com' },
-            password: { type: 'string', example: 'senha123' }
+            senha: { type: 'string', example: 'senha123' },
           },
-          required: ['email', 'password']
+          required: ['nome', 'email', 'senha'],
         },
         RegisterSuccess: {
           type: 'object',
           properties: {
-            message: { type: 'string', example: 'Usuário registrado com sucesso' },
-            userId: { type: 'string', example: 'abc123' }
-          }
+            message: { type: 'string', example: 'Usuário registrado com sucesso!' },
+            user: {
+              type: 'object',
+              example: {
+                id: '672ffb1b2ac87031aaf4889c',
+                nome: 'Bianca',
+                email: 'usuario@email.com'
+              }
+            },
+            token: { type: 'string', example: 'jwt_aqui' },
+          },
         },
         LoginInput: {
           type: 'object',
           properties: {
             email: { type: 'string', example: 'usuario@email.com' },
-            password: { type: 'string', example: 'senha123' }
+            senha: { type: 'string', example: 'senha123' },
           },
-          required: ['email', 'password']
+          required: ['email', 'senha'],
         },
         LoginSuccess: {
           type: 'object',
           properties: {
-            token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6...' }
-          }
+            message: { type: 'string', example: 'Login realizado com sucesso!' },
+            user: {
+              type: 'object',
+              example: {
+                id: '672ffb1b2ac87031aaf4889c',
+                nome: 'Bianca',
+                email: 'usuario@email.com'
+              }
+            },
+            token: { type: 'string', example: 'jwt_aqui' },
+          },
         },
         ErrorResponse: {
           type: 'object',
           properties: {
-            error: { type: 'string', example: 'Mensagem de erro' }
-          }
-        }
-      }
-    }
+            error: { type: 'string', example: 'Mensagem de erro.' },
+          },
+        },
+      },
+    },
   },
 
-
-apis: [path.join(__dirname, '../routes/authRoutes.js')]
+  apis: [path.join(__dirname, '../routes/authRoutes.js')],
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
