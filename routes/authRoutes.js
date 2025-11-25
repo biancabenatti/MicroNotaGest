@@ -1,14 +1,68 @@
 const express = require('express');
 const router = express.Router();
-const authController = require('../controllers/auth/authController'); 
+const authController = require('../controllers/auth/authController');
 
-// --- Rotas de Autenticação (PÚBLICAS) ---
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Operações de autenticação
+ */
 
-// POST /register: Rota para criar uma nova conta de usuário.
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Registra um novo usuário
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/RegisterInput'
+ *     responses:
+ *       201:
+ *         description: Usuário registrado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/RegisterSuccess'
+ *       400:
+ *         description: Erro de validação ou usuário já existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.post('/register', authController.registerUser);
 
-// POST /login: Rota para autenticar o usuário e retornar o JWT de sessão.
+/**
+ * @swagger
+ * /login:
+ *   post:
+ *     summary: Login de usuário
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginInput'
+ *     responses:
+ *       200:
+ *         description: Login realizado com sucesso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/LoginSuccess'
+ *       400:
+ *         description: Credenciais inválidas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ */
 router.post('/login', authController.loginUser);
 
-// Exporta o objeto 'router' contendo todas as rotas de autenticação
 module.exports = router;
