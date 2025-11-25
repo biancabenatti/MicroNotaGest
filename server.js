@@ -19,7 +19,9 @@ app.use(cors({
   origin: (origin, callback) => {
     const allowed = [
       'http://localhost:3000',
-      'https://nota-gest.vercel.app'
+      'https://nota-gest.vercel.app',
+      'https://micronotagest.onrender.com',
+      'http://localhost:5001'
     ];
 
     if (!origin || allowed.includes(origin)) {
