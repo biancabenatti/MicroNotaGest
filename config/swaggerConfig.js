@@ -2,6 +2,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
 const PORT = process.env.PORT || 5001;
+const BACKEND_URL = process.env.AUTH_SERVICE_URL; // <- aqui pega a URL do Render
 
 const swaggerOptions = {
   swaggerDefinition: {
@@ -12,7 +13,10 @@ const swaggerOptions = {
       description: 'Microserviço responsável pelo registro e login de usuários com JWT.',
     },
     servers: [
-      { url: `http://localhost:${PORT}`, description: 'Servidor local do Auth Service' }
+      { 
+        url: BACKEND_URL || `http://localhost:${PORT}`, 
+        description: 'Servidor Auth Service'
+      }
     ],
     components: {
       securitySchemes: {
@@ -34,7 +38,10 @@ const swaggerOptions = {
             message: { type: 'string', example: 'Usuário registrado com sucesso!' },
             user: {
               type: 'object',
-              properties: { id: { type: 'string', example: '671bcd00f29b2b83a4e1a8f3' }, email: { type: 'string', example: 'ana@example.com' } }
+              properties: { 
+                id: { type: 'string', example: '671bcd00f29b2b83a4e1a8f3' }, 
+                email: { type: 'string', example: 'ana@example.com' } 
+              }
             }
           }
         },
@@ -67,7 +74,7 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
 const setupSwagger = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  console.log(`📘 Swagger rodando em: http://localhost:${PORT}/api-docs`);
+  console.log(`📘 Swagger rodando em: ${BACKEND_URL || `http://localhost:${PORT}`}/api-docs`);
 };
 
 module.exports = setupSwagger;
