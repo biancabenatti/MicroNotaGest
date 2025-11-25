@@ -16,8 +16,19 @@ const app = express();
 
 // Configura o middleware CORS
 app.use(cors({
-  origin: 'http://localhost:3000', // front-end local
-  methods: ['GET','POST','PUT','DELETE'],
+  origin: (origin, callback) => {
+    const allowed = [
+      'http://localhost:3000',
+      'https://nota-gest.vercel.app'
+    ];
+
+    if (!origin || allowed.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Origin não permitido pelo CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true,
 }));
 
